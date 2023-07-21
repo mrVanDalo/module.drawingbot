@@ -36,8 +36,7 @@
             inherit dontUnpack buildPhase nativeBuildInputs version;
             src = pkgs.fetchurl {
               url = "https://github.com/SonarSonic/DrawingBotV3/releases/download/v${version}-free/DrawingBotV3-Free-${version}-linux.deb";
-                     #https://github.com/SonarSonic/DrawingBotV3/releases/download/v1.6.1-beta-free/DrawingBotV3-Free-1.6.1-beta-linux.deb
-              # sha256 = "04x477azqdj3dc66wnjia44cnkp7nsba40a3qh0fhghprl4y41kk";
+              sha256 = "sha256-7sYRRPYGBUfoW5jxVRQ/cY6ZIiBzlnz87iWGMZhcfNA=";
             };
           };
       };
