@@ -6,7 +6,7 @@
     packages.x86_64-linux =
       with import nixpkgs { system = "x86_64-linux"; };
       let
-        fhsPackages = import ./fhsPackages.nix;
+
         dontUnpack = true;
         buildPhase = ''
           dpkg -x $src unpacked
@@ -15,12 +15,30 @@
         '';
         nativeBuildInputs = [ pkgs.dpkg ];
         version = "1.6.1-beta";
+
+        fhsPackages = import ./fhsPackages.nix;
+        fhsEnvironmentBuilder =
+          { pkgs
+          , drawbotPackage
+          , runScript
+          }:
+          buildFHSEnv {
+            name = runScript;
+            inherit (fhsPackages) multiPkgs;
+            inherit runScript;
+            targetPkgs = pkgs: with pkgs; [
+              #self.packages.x86_64-linux.drawingbot_bin_premium
+              drawbotPackage
+              gnome.zenity
+            ] ++ fhsPackages.commonTargetPkgs pkgs;
+          };
+
       in
       {
 
         default = self.packages.x86_64-linux.drawingbot_bin_free;
 
-        drawingbot_bin_premium =
+        drawingbot_deb_premium =
           stdenv.mkDerivation rec {
             name = "drawingbot_bin_premium";
             inherit dontUnpack buildPhase nativeBuildInputs version;
@@ -31,7 +49,13 @@
             };
           };
 
-        drawingbot_bin_free =
+        drawingbot_bin_premium = fhsEnvironmentBuilder {
+          inherit pkgs;
+          drawbotPackage = self.packages.x86_64-linux.drawingbot_deb_premium;
+          runScript = "DrawingBotV3-Premium";
+        };
+
+        drawingbot_deb_free =
           stdenv.mkDerivation rec {
             name = "drawingbot_bin_free";
             inherit dontUnpack buildPhase nativeBuildInputs version;
@@ -41,23 +65,12 @@
             };
           };
 
-        drawingbot =
-          with import nixpkgs { system = "x86_64-linux"; };
-          buildFHSEnv {
-            inherit (fhsPackages) multiPkgs;
-            name = "drawing";
-            targetPkgs = pkgs: with pkgs; [
-              self.packages.x86_64-linux.drawingbot_bin_premium
-              gnome.zenity
-            ] ++ fhsPackages.commonTargetPkgs pkgs;
-            runScript = "DrawingBotV3-Premium";
-          };
+        drawingbot_bin_free = fhsEnvironmentBuilder {
+          inherit pkgs;
+          drawbotPackage = self.packages.x86_64-linux.drawingbot_deb_free;
+          runScript = "DrawingBotV3-Free";
+        };
 
-        drawingsteam =
-          with import nixpkgs { system = "x86_64-linux"; };
-          pkgs.writers.writeDashBin "drawingsteam" ''
-            ${pkgs.steam}/bin/steam-run ${self.packages.x86_64-linux.drawingbot_bin_premium}/bin/DrawingBotV3-Premium
-          '';
       };
 
   };
