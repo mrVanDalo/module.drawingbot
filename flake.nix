@@ -6,6 +6,7 @@
     packages.x86_64-linux =
       with import nixpkgs { system = "x86_64-linux"; };
       let
+        fhsPackages = import ./fhsPackages.nix;
         dontUnpack = true;
         buildPhase = ''
           dpkg -x $src unpacked
@@ -39,17 +40,25 @@
               sha256 = "sha256-7sYRRPYGBUfoW5jxVRQ/cY6ZIiBzlnz87iWGMZhcfNA=";
             };
           };
+
+        drawingbot =
+          with import nixpkgs { system = "x86_64-linux"; };
+          buildFHSEnv {
+            inherit (fhsPackages) multiPkgs;
+            name = "drawing";
+            targetPkgs = pkgs: with pkgs; [
+              self.packages.x86_64-linux.drawingbot_bin_premium
+              gnome.zenity
+            ] ++ fhsPackages.commonTargetPkgs pkgs;
+            runScript = "DrawingBotV3-Premium";
+          };
+
+        drawingsteam =
+          with import nixpkgs { system = "x86_64-linux"; };
+          pkgs.writers.writeDashBin "drawingsteam" ''
+            ${pkgs.steam}/bin/steam-run ${self.packages.x86_64-linux.drawingbot_bin_premium}/bin/DrawingBotV3-Premium
+          '';
       };
-
-    #packages.x86_64-linux.drawingbot =
-    #  with import nixpkgs { system = "x86_64-linux"; };
-    #  buildFHSEnv {
-    #    name = "drawing";
-    #    targetPkgs = pkgs: [ self.packages.x86_64-linux.drawingbot_bin ];
-    #    runScript = "DrawingBotV3-Premium";
-    #  };
-
-
 
   };
 }
