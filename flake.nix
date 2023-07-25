@@ -14,7 +14,7 @@
           cp -r unpacked/opt/drawingbotv3/* $out/
         '';
         nativeBuildInputs = [ pkgs.dpkg ];
-        version = "1.6.1-beta";
+        version = "1.6.2-beta";
 
         fhsPackages = import ./fhsPackages.nix;
         fhsEnvironmentBuilder =
@@ -45,7 +45,7 @@
             src = pkgs.requireFile {
               name = "DrawingBotV3-Premium-${version}-linux.deb";
               url = "https://drawingbotv3.com/releases/";
-              sha256 = "04x477azqdj3dc66wnjia44cnkp7nsba40a3qh0fhghprl4y41kk";
+              sha256 = "1d0m27fqy949d5wjknry0m6vd6jm9wsgz85nhb3ip9cfb2a3rrfj";
             };
           };
 
@@ -61,7 +61,7 @@
             inherit dontUnpack buildPhase nativeBuildInputs version;
             src = pkgs.fetchurl {
               url = "https://github.com/SonarSonic/DrawingBotV3/releases/download/v${version}-free/DrawingBotV3-Free-${version}-linux.deb";
-              sha256 = "sha256-7sYRRPYGBUfoW5jxVRQ/cY6ZIiBzlnz87iWGMZhcfNA=";
+              sha256 = "sha256-4/N0ma82fz7A/iWt0FJ6NTskdlXiCjdqTlLXLlnUfNw=";
             };
           };
 
