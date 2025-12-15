@@ -14,7 +14,7 @@
           cp -r unpacked/opt/drawingbotv3/* $out/
         '';
         nativeBuildInputs = [ pkgs.dpkg ];
-        version = "1.6.2-beta";
+        version = "1.6.25-stable";
 
         fhsPackages = import ./fhsPackages.nix;
         fhsEnvironmentBuilder =
@@ -29,7 +29,7 @@
             targetPkgs = pkgs: with pkgs; [
               #self.packages.x86_64-linux.drawingbot_bin_premium
               drawbotPackage
-              gnome.zenity
+              zenity
             ] ++ fhsPackages.commonTargetPkgs pkgs;
           };
 
@@ -43,9 +43,9 @@
             name = "drawingbot_bin_premium";
             inherit dontUnpack buildPhase nativeBuildInputs version;
             src = pkgs.requireFile {
-              name = "DrawingBotV3-Premium-${version}-linux.deb";
+              name = "DrawingBotV3-Premium-${version}-linux-x86-64.deb";
               url = "https://drawingbotv3.com/releases/";
-              sha256 = "1d0m27fqy949d5wjknry0m6vd6jm9wsgz85nhb3ip9cfb2a3rrfj";
+              sha256 = "1djcmd0bi46insmx1b1swh1m98gv0yl7yg38b53m9kw522y9djrw";
             };
           };
 
